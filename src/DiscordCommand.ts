@@ -1,17 +1,19 @@
+import {Client, ClientOptions, Message, PermissionString} from "discord.js";
+
 export interface DiscordCommand {
     name: string;
     alias?: string[];
     description?: string;
     bot?: boolean;
-    userPermissions?: string[];
-    botPermissions?: string[];
+    userPermissions?: PermissionString[];
+    botPermissions?: PermissionString[];
 
     run(arg: DiscordCommandArgs): any | Promise<any>;
 }
 
 export interface DiscordCommandArgs {
-    client: any;
-    message: any;
+    client: Client;
+    message: Message;
     args: any[];
 }
 
@@ -35,9 +37,11 @@ export function Command(target: any) {
     });
 }
 
-export class DiscordCommands {
-    constructor(client: any, prefix: string) {
-        client.on("messageCreate", async (message: any) => {
+export class DiscordCommands extends Client {
+    constructor(prefix: string, options: ClientOptions) {
+        super(options);
+
+        super.on("messageCreate", async message => {
             if (!message.content.startsWith(prefix))
                 return;
 

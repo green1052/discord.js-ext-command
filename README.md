@@ -14,15 +14,13 @@ npm install discord.js-ext-command
 
 ```typescript
 import {DiscordCommands, Command, DiscordCommand, DiscordCommandArgs} from "DiscordCommand";
-import {Client, Intents} from "discord.js";
+import {Intents} from "discord.js";
 
 const prefix = "!";
 
-const client = new Client({
+const client = new DiscordCommands(prefix, {
     intents: [Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.DIRECT_MESSAGES]
 });
-
-new DiscordCommands(client, prefix);
 
 const token = "input your token";
 
