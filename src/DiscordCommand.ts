@@ -141,6 +141,10 @@ export class DiscordCommands extends Client {
         return commandList;
     }
 
+    public get InteractionCommands(): InteractionCommandInfo[] {
+        return interactionCommandList;
+    }
+
     public GetCommand(name: string, alias: boolean = true): CommandInfo | undefined {
         return this.Commands.find(command => command.name === name || alias && command.command.alias?.includes(name));
     }
@@ -153,10 +157,6 @@ export class DiscordCommands extends Client {
 
         delete commandList[commandList.indexOf(command)];
         return true;
-    }
-
-    public get InteractionCommands(): InteractionCommandInfo[] {
-        return interactionCommandList;
     }
 
     public GetInteractionCommand(name: string): InteractionCommandInfo | undefined {

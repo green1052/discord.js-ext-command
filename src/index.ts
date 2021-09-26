@@ -1,3 +1,23 @@
-import {Command, CommandInfo, DiscordCommand, DiscordCommandArgs, DiscordCommands} from "./DiscordCommand";
+import {
+    Command,
+    CommandInfo,
+    DiscordCommand,
+    DiscordCommandArgs,
+    DiscordCommands,
+    DiscordInteractionCommand,
+    DiscordInteractionCommandArgs,
+    InteractionCommand,
+    InteractionCommandInfo
+} from "./DiscordCommand";
 
-export {Command, CommandInfo, DiscordCommand, DiscordCommandArgs, DiscordCommands};
+export {
+    Command,
+    CommandInfo,
+    DiscordCommand,
+    DiscordCommandArgs,
+    DiscordCommands,
+    DiscordInteractionCommand,
+    DiscordInteractionCommandArgs,
+    InteractionCommand,
+    InteractionCommandInfo
+};
