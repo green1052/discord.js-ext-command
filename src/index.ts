@@ -1,3 +1,3 @@
-import DiscordCommand from "./DiscordCommand";
+import {Command, DiscordCommand, DiscordCommandArgs, DiscordCommands} from "./DiscordCommand";
 
-export default {DiscordCommand};
+export {Command, DiscordCommand, DiscordCommandArgs, DiscordCommands};

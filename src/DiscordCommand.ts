@@ -37,7 +37,7 @@ export function Command(target: any) {
     });
 }
 
-export default class DiscordCommands extends Client {
+export class DiscordCommands extends Client {
     constructor(prefix: string, options: ClientOptions) {
         super(options);
 

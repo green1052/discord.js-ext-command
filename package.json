@@ -1,6 +1,6 @@
 {
   "name": "discord.js-ext-command",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "discord.js-ext-command is command handler for discord.js",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -20,7 +20,12 @@
   "homepage": "https://github.com/asdf8965/discord.js-ext-command",
   "bugs": "https://github.com/asdf8965/discord.js-ext-command/issues",
   "dependencies": {
-    "discord.js": "^13.1.0",
+    "discord.js": "^13.1.0"
+  },
+  "devDependencies": {
     "typescript": "^4.4.3"
-  }
+  },
+  "files": [
+    "dist"
+  ]
 }
