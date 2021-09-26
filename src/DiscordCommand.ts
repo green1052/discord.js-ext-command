@@ -8,7 +8,7 @@ export interface DiscordCommand {
     userPermissions?: PermissionString[];
     botPermissions?: PermissionString[];
 
-    run(arg: DiscordCommandArgs): any | Promise<any>;
+    run(arg?: DiscordCommandArgs): any | Promise<any>;
 }
 
 export interface DiscordCommandArgs {
@@ -17,10 +17,12 @@ export interface DiscordCommandArgs {
     args: any[];
 }
 
-const commandList: {
+export interface CommandInfo {
     name: string,
     command: DiscordCommand
-}[] = [];
+}
+
+const commandList: CommandInfo[] = [];
 
 export function Command(target: any) {
     const command: DiscordCommand = new target();
@@ -41,34 +43,37 @@ export class DiscordCommands extends Client {
     constructor(prefix: string, options: ClientOptions) {
         super(options);
 
-        super.on("messageCreate", async message => {
+        super.on("messageCreate", message => {
+            if (!commandList.length)
+                return;
+
             if (!message.content.startsWith(prefix))
                 return;
 
-            if (message.content.slice(0, prefix.length) !== prefix)
-                return;
-
             const args = message.content.substring(prefix.length).split(" ");
-            const command = args.shift();
 
-            if (!command)
+            if (!args.length)
                 return;
+
+            const command = args.shift()!;
 
             const target = commandList.find(a => a.name === command || a.command.alias?.includes(command));
 
-            if (!target)
+            if (target === undefined)
                 return;
 
             if (target.command.bot === false && message.author.bot)
                 return;
 
-            if (target.command.userPermissions !== undefined && !message.member?.permissions.has(target.command.userPermissions))
+            if (target.command.userPermissions !== undefined &&
+                !message.member?.permissions.has(target.command.userPermissions))
                 return;
 
-            if (target.command.botPermissions !== undefined && !message.member?.permissions.has(target.command.botPermissions))
+            if (target.command.botPermissions !== undefined &&
+                !message.member?.permissions.has(target.command.botPermissions))
                 return;
 
-            await target.command.run({
+            target.command.run({
                 client: message.client,
                 message: message,
                 args: args
@@ -76,7 +81,21 @@ export class DiscordCommands extends Client {
         });
     }
 
-    public get Commands() {
+    public get Commands(): CommandInfo[] {
         return commandList;
+    }
+
+    public GetCommand(name: string, alias: boolean = true): CommandInfo | undefined {
+        return this.Commands.find(command => command.name === name || alias && command.command.alias?.includes(name));
+    }
+
+    public RemoveCommand(name: string): boolean {
+        const command = this.GetCommand(name);
+
+        if (command === undefined)
+            return false;
+
+        delete commandList[commandList.indexOf(command)];
+        return true;
     }
 }

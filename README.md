@@ -28,9 +28,9 @@ client.login(token);
 
 @Command
 class HelloWorldCommand implements DiscordCommand {
-    name = "hello";
+    public name = "hello";
 
-    run(arg: DiscordCommandArgs) {
+    public run(arg: DiscordCommandArgs) {
         arg.message.channel.send("world!");
     }
 }
