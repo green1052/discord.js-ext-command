@@ -1,4 +1,4 @@
-import {Client, ClientOptions, Message, PermissionString} from "discord.js";
+import {Client, Message, PermissionString} from "discord.js";
 
 export interface DiscordCommand {
     name: string;
@@ -37,11 +37,9 @@ export function Command(target: any) {
     });
 }
 
-export class DiscordCommands extends Client {
-    constructor(prefix: string, options: ClientOptions) {
-        super(options);
-
-        super.on("messageCreate", async message => {
+export class DiscordCommands {
+    constructor(client: Client, prefix: string) {
+        client.on("messageCreate", async message => {
             if (!message.content.startsWith(prefix))
                 return;
 
