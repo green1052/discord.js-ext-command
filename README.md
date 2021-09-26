@@ -12,19 +12,17 @@ npm install discord.js-ext-command
 
 ## Example
 
+Text:
+
 ```typescript
-import {DiscordCommands, Command, DiscordCommand, DiscordCommandArgs} from "discord.js-ext-command";
+import {Command, DiscordCommand, DiscordCommandArgs, DiscordCommands} from "discord.js-ext-command";
 import {Intents} from "discord.js";
 
-const prefix = "!";
-
-const client = new DiscordCommands(prefix, {
+const client = new DiscordCommands("prefix", {
     intents: [Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.DIRECT_MESSAGES]
 });
 
-const token = "input your token";
-
-client.login(token);
+client.login("token");
 
 @Command
 class HelloWorldCommand implements DiscordCommand {
@@ -32,6 +30,32 @@ class HelloWorldCommand implements DiscordCommand {
 
     public run(arg: DiscordCommandArgs) {
         arg.message.channel.send("world!");
+    }
+}
+```
+
+Slash Command:
+
+```typescript
+import {REST} from "@discordjs/rest";
+import {Routes} from "discord-api-types/v9";
+import {DiscordInteractionCommand, DiscordInteractionCommandArgs, InteractionCommand} from "discord.js-ext-command";
+
+const commands = [{
+    name: "hello",
+    description: "print hello world"
+}];
+
+const rest = new REST({version: "9"}).setToken("token");
+
+rest.put(Routes.applicationGuildCommands(CLIENT_ID, GUILD_ID), {body: commands});
+
+@InteractionCommand
+class HelloWorldCommand implements DiscordInteractionCommand {
+    public name = "hello";
+
+    public run(arg: DiscordInteractionCommandArgs) {
+        arg.interaction.reply("world");
     }
 }
 ```

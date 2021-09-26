@@ -1,5 +1,6 @@
-import {Client, ClientOptions, Message, PermissionString} from "discord.js";
+import {Client, ClientOptions, Interaction, Message, PermissionString} from "discord.js";
 
+// Text
 export interface DiscordCommand {
     name: string;
     alias?: string[];
@@ -12,17 +13,14 @@ export interface DiscordCommand {
 }
 
 export interface DiscordCommandArgs {
-    client: Client;
     message: Message;
     args: any[];
 }
 
 export interface CommandInfo {
-    name: string,
-    command: DiscordCommand
+    name: string;
+    command: DiscordCommand;
 }
-
-const commandList: CommandInfo[] = [];
 
 export function Command(target: any) {
     const command: DiscordCommand = new target();
@@ -39,9 +37,68 @@ export function Command(target: any) {
     });
 }
 
+const commandList: CommandInfo[] = [];
+// Text end
+
+// Interaction
+export interface DiscordInteractionCommand {
+    name: string;
+    bot?: boolean;
+
+    run(arg?: DiscordInteractionCommandArgs): any | Promise<any>;
+}
+
+export interface DiscordInteractionCommandArgs {
+    interaction: Interaction;
+}
+
+export interface InteractionCommandInfo {
+    name: string;
+    command: DiscordInteractionCommand;
+}
+
+export function InteractionCommand(target: any) {
+    const command: DiscordInteractionCommand = new target();
+
+    if (command.name === undefined)
+        throw "name is null!";
+
+    if (command.run === undefined)
+        throw "run is null!";
+
+    interactionCommandList.push({
+        name: command.name,
+        command: command
+    });
+}
+
+const interactionCommandList: InteractionCommandInfo[] = [];
+
+// Interaction end
+
 export class DiscordCommands extends Client {
     constructor(prefix: string, options: ClientOptions) {
         super(options);
+
+        super.on("interactionCreate", async interaction => {
+            if (!commandList.length)
+                return;
+
+            if (!interaction.isCommand())
+                return;
+
+            const command = this.GetInteractionCommand(interaction.commandName);
+
+            if (!command)
+                return;
+
+            if (command.command.bot === false && interaction.member?.user.bot)
+                return;
+
+            command.command.run({
+                interaction: interaction
+            });
+        });
 
         super.on("messageCreate", message => {
             if (!commandList.length)
@@ -57,7 +114,7 @@ export class DiscordCommands extends Client {
 
             const command = args.shift()!;
 
-            const target = commandList.find(a => a.name === command || a.command.alias?.includes(command));
+            const target = this.GetCommand(command);
 
             if (target === undefined)
                 return;
@@ -70,11 +127,10 @@ export class DiscordCommands extends Client {
                 return;
 
             if (target.command.botPermissions !== undefined &&
-                !message.member?.permissions.has(target.command.botPermissions))
+                !message.guild?.me?.permissions.has(target.command.botPermissions))
                 return;
 
             target.command.run({
-                client: message.client,
                 message: message,
                 args: args
             });
@@ -96,6 +152,24 @@ export class DiscordCommands extends Client {
             return false;
 
         delete commandList[commandList.indexOf(command)];
+        return true;
+    }
+
+    public get InteractionCommands(): InteractionCommandInfo[] {
+        return interactionCommandList;
+    }
+
+    public GetInteractionCommand(name: string): InteractionCommandInfo | undefined {
+        return this.InteractionCommands.find(command => command.name === name);
+    }
+
+    public RemoveInteractionCommand(name: string): boolean {
+        const command = this.GetInteractionCommand(name);
+
+        if (command === undefined)
+            return false;
+
+        delete interactionCommandList[interactionCommandList.indexOf(command)];
         return true;
     }
 }
