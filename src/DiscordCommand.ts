@@ -73,7 +73,6 @@ export function InteractionCommand(target: any) {
 }
 
 const interactionCommandList: InteractionCommandInfo[] = [];
-
 // Interaction end
 
 export class DiscordCommands extends Client {
@@ -81,7 +80,7 @@ export class DiscordCommands extends Client {
         super(options);
 
         super.on("interactionCreate", async interaction => {
-            if (!commandList.length)
+            if (!interactionCommandList.length)
                 return;
 
             if (!interaction.isCommand())
