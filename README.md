@@ -13,7 +13,7 @@ npm install discord.js-ext-command
 ## Example
 
 ```typescript
-import {DiscordCommands, Command, DiscordCommand, DiscordCommandArgs} from "DiscordCommand";
+import {DiscordCommands, Command, DiscordCommand, DiscordCommandArgs} from "discord.js-ext-command";
 import {Intents} from "discord.js";
 
 const prefix = "!";
