@@ -1,4 +1,4 @@
-import {Client, ClientOptions, Interaction, Message, PermissionString} from "discord.js";
+import {Client, ClientOptions, CommandInteraction, Message, PermissionString} from "discord.js";
 
 // Text
 export interface DiscordCommand {
@@ -49,7 +49,7 @@ export interface DiscordInteractionCommand {
 }
 
 export interface DiscordInteractionCommandArgs {
-    interaction: Interaction;
+    interaction: CommandInteraction;
 }
 
 export interface InteractionCommandInfo {
