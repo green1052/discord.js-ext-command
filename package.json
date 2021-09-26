@@ -1,9 +1,9 @@
 {
   "name": "discord.js-ext-command",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "discord.js-ext-command is command handler for discord.js",
   "main": "dist/index.js",
-  "types": "dist/index.ts",
+  "types": "dist/index.d.ts",
   "scripts": {
     "build": "tsc",
     "publish": "npm run build && npm publish"
