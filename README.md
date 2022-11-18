@@ -4,32 +4,41 @@ discord.js-ext-command is command handler for [discord.js](https://github.com/di
 
 ## Installation
 
-[discord.js](https://github.com/discordjs/discord.js/) 13.1.0 or newer is required.
+[discord.js](https://github.com/discordjs/discord.js/) 14.0.0 or newer is required.
 
 ```
-npm install discord.js-ext-command
+npm install git+https://github.com/green1052/discord.js-ext-command#[tag]
+yarn add git+https://github.com/green1052/discord.js-ext-command#[tag]
 ```
 
 ## Example
 
-Text:
+Text Command:
 
 ```typescript
-import {Command, DiscordCommand, DiscordCommandArgs, DiscordCommands} from "discord.js-ext-command";
-import {Intents} from "discord.js";
+import {Command, Client, TextCommand} from "discord.js-ext-command";
+import {CommandInteraction, GatewayIntentBits, Message, SlashCommandBuilder} from "discord.js";
 
-const client = new DiscordCommands("prefix", {
-    intents: [Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.DIRECT_MESSAGES]
+const client = new DiscordCommands({
+    prefix: "!"
+}, {
+    intents: [
+        GatewayIntentBits.Guilds,
+        GatewayIntentBits.GuildMessages,
+        GatewayIntentBits.DirectMessages,
+        GatewayIntentBits.MessageContent
+    ]
 });
 
 client.login("token");
 
 @Command
-class HelloWorldCommand implements DiscordCommand {
+class HelloWorldCommand implements TextCommand {
     public name = "hello";
+    public args = 1;
 
-    public run(arg: DiscordCommandArgs) {
-        arg.message.channel.send("world!");
+    public execute(message: Message, args: string[]) {
+        message.channel.send(`hello ${args[0]}!`);
     }
 }
 ```
@@ -37,27 +46,29 @@ class HelloWorldCommand implements DiscordCommand {
 Slash Command:
 
 ```typescript
-import {REST} from "@discordjs/rest";
-import {Routes} from "discord-api-types/v9";
-import {DiscordInteractionCommand, DiscordInteractionCommandArgs, InteractionCommand} from "discord.js-ext-command";
+import {Command, Client, InteractionCommand} from "discord.js-ext-command";
+import {CommandInteraction, GatewayIntentBits, SlashCommandBuilder} from "discord.js";
 
-const commands = [{
-    name: "hello",
-    description: "print hello world"
-}];
+const client = new DiscordCommands({
+    prefix: "!"
+}, {
+    intents: [
+        GatewayIntentBits.Guilds
+    ]
+});
 
-const rest = new REST({version: "9"}).setToken("token");
+client.login("token");
 
-rest.put(Routes.applicationGuildCommands(CLIENT_ID, GUILD_ID), {body: commands});
+@Command
+class HelloWorldCommand implements InteractionCommand {
+    data = new SlashCommandBuilder()
+        .setName("test")
+        .setDescription("test")
 
-@InteractionCommand
-class HelloWorldCommand implements DiscordInteractionCommand {
-    public name = "hello";
-
-    public run(arg: DiscordInteractionCommandArgs) {
-        arg.interaction.reply("world");
+    execute(interaction: CommandInteraction) {
+        interaction.reply({
+            content: "test"
+        });
     }
 }
 ```
-
-[more function](https://github.com/asdf8965/discord.js-ext-command/blob/master/src/DiscordCommand.ts#L3)
