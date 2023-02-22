@@ -118,15 +118,19 @@ export class Client extends DiscordClient {
             const command = textCommandList.find(command => command.name === cmd || command.alias?.includes(cmd));
 
             if (command === undefined) {
-                if (this.clientOptions.commandNotFoundMessage !== undefined)
+                if (this.clientOptions.commandNotFoundMessage !== undefined) {
+                    // @ts-ignore
                     message.channel.send(this.clientOptions.commandNotFoundMessage);
+                }
 
                 return;
             }
 
             if (command.args !== undefined && command.args > args.length) {
-                if (this.clientOptions.noArgsMessage !== undefined)
+                if (this.clientOptions.noArgsMessage !== undefined) {
+                    // @ts-ignore
                     message.channel.send(this.clientOptions.noArgsMessage);
+                }
 
                 return;
             }
@@ -135,15 +139,19 @@ export class Client extends DiscordClient {
 
             if (message.guild !== undefined) {
                 if (command.botPermissions !== undefined && !command.botPermissions.every(permission => message.guild!.members.me!.permissions.has(permission))) {
-                    if (this.clientOptions.noBotPermissionMessage !== undefined)
+                    if (this.clientOptions.noBotPermissionMessage !== undefined) {
+                        // @ts-ignore
                         message.channel.send(this.clientOptions.noBotPermissionMessage);
+                    }
 
                     return;
                 }
 
                 if (command.userPermissions !== undefined && !command.userPermissions.every(permission => message.member!.permissions.has(permission))) {
-                    if (this.clientOptions.noUserPermissionMessage !== undefined)
+                    if (this.clientOptions.noUserPermissionMessage !== undefined) {
+                        // @ts-ignore
                         message.channel.send(this.clientOptions.noUserPermissionMessage);
+                    }
 
                     return;
                 }
@@ -160,8 +168,10 @@ export class Client extends DiscordClient {
                 const expirationTime = cooldown + this.clientOptions.globalCooldown;
 
                 if (now < expirationTime) {
-                    if (this.clientOptions.globalCooldownMessage !== undefined)
+                    if (this.clientOptions.globalCooldownMessage !== undefined) {
+                        // @ts-ignore
                         message.channel.send(this.clientOptions.globalCooldownMessage);
+                    }
 
                     return;
                 } else {
@@ -181,8 +191,10 @@ export class Client extends DiscordClient {
                     const expirationTime = cooldown.get(message.author.id)! + command.cooldown;
 
                     if (now < expirationTime) {
-                        if (this.clientOptions.commandCooldownMessage !== undefined)
+                        if (this.clientOptions.commandCooldownMessage !== undefined) {
+                            // @ts-ignore
                             message.channel.send(this.clientOptions.commandCooldownMessage);
+                        }
 
                         return;
                     } else {
