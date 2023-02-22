@@ -210,5 +210,5 @@ export class Client extends DiscordClient {
 
 export default {
     Command,
-    Client,
-}
+    Client
+};
