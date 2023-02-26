@@ -7,8 +7,8 @@ discord.js-ext-command is command handler for [discord.js](https://github.com/di
 [discord.js](https://github.com/discordjs/discord.js/) 14.0.0 or newer is required.
 
 ```
-npm install git+https://github.com/green1052/discord.js-ext-command#[tag]
-yarn add git+https://github.com/green1052/discord.js-ext-command#[tag]
+npm install discord.js-ext-command
+yarn add discord.js-ext-command
 ```
 
 ## Example
