@@ -17,7 +17,7 @@ interface BaseCommand {
 }
 
 export interface InteractionCommand extends BaseCommand {
-    data: SlashCommandBuilder;
+    data: Omit<SlashCommandBuilder, "addSubcommand" | "addSubcommandGroup">;
     guildId?: string;
 
     execute(interaction: CommandInteraction): void | Promise<void>;
