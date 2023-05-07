@@ -56,6 +56,7 @@ export interface ClientOptions {
     /** not working yet */
     useDecorator?: boolean;
 
+    commandErrorMessage?: string;
     commandCooldownMessage?: string;
     globalCooldownMessage?: string;
     commandNotFoundMessage?: string;
@@ -81,14 +82,18 @@ export class Client extends DiscordClient {
             const global: RESTPostAPIChatInputApplicationCommandsJSONBody[] = [];
             const guild: { [key: string]: RESTPostAPIChatInputApplicationCommandsJSONBody[] } = {};
 
-            interactionCommandList.forEach(command => {
-                if (command.guildId === undefined) {
-                    global.push(command.data.toJSON());
-                    return;
-                }
+            interactionCommandList.forEach((command) => {
+                try {
+                    if (command.guildId === undefined) {
+                        global.push(command.data.toJSON());
+                        return;
+                    }
 
-                guild[command.guildId] ??= [];
-                guild[command.guildId].push(command.data.toJSON());
+                    guild[command.guildId] ??= [];
+                    guild[command.guildId].push(command.data.toJSON());
+                } catch (e) {
+                    console.error(e);
+                }
             });
 
             if (global.length > 0) {
@@ -205,7 +210,16 @@ export class Client extends DiscordClient {
                 }
             }
 
-            command.execute(message, args);
+            try {
+                command.execute(message, args);
+            } catch (e) {
+                console.error(e);
+
+                if (this.clientOptions.commandErrorMessage !== undefined) {
+                    // @ts-ignore
+                    message.channel.send(this.clientOptions.commandErrorMessage);
+                }
+            }
         });
 
         super.on(Events.InteractionCreate, async (interaction) => {
@@ -213,7 +227,18 @@ export class Client extends DiscordClient {
 
             const command = interactionCommandList.get(interaction.commandName)!;
 
-            command.execute(interaction);
+            try {
+                command.execute(interaction);
+            } catch (e) {
+                console.error(e);
+
+                if (this.clientOptions.commandErrorMessage !== undefined) {
+                    interaction.reply({
+                        content: this.clientOptions.commandErrorMessage,
+                        ephemeral: true
+                    });
+                }
+            }
         });
 
         this.clientOptions = clientOptions;
