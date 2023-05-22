@@ -1,8 +1,9 @@
 import {
+    AutocompleteInteraction,
+    ChatInputCommandInteraction,
     Client as DiscordClient,
     ClientOptions as DiscordClientOptions,
     Collection,
-    CommandInteraction,
     Events,
     Message,
     PermissionResolvable,
@@ -17,10 +18,12 @@ interface BaseCommand {
 }
 
 export interface InteractionCommand extends BaseCommand {
-    data: Omit<SlashCommandBuilder, "addSubcommand" | "addSubcommandGroup">;
+    data: SlashCommandBuilder;
     guildId?: string;
 
-    execute(interaction: CommandInteraction): void | Promise<void>;
+    autocomplete?(interaction: AutocompleteInteraction): void | Promise<void>;
+
+    execute(interaction: ChatInputCommandInteraction): void | Promise<void>;
 }
 
 export interface TextCommand extends BaseCommand {
@@ -223,6 +226,18 @@ export class Client extends DiscordClient {
         });
 
         super.on(Events.InteractionCreate, async (interaction) => {
+            if (interaction.isAutocomplete()) {
+                const command = interactionCommandList.get(interaction.commandName)!;
+
+                try {
+                    command.autocomplete?.(interaction);
+                } catch (e) {
+                    console.error(e);
+                }
+
+                return;
+            }
+
             if (!interaction.isChatInputCommand()) return;
 
             const command = interactionCommandList.get(interaction.commandName)!;
@@ -239,6 +254,8 @@ export class Client extends DiscordClient {
                     });
                 }
             }
+            return;
+
         });
 
         this.clientOptions = clientOptions;

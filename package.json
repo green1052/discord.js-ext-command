@@ -20,11 +20,11 @@
   "homepage": "https://github.com/green1052/discord.js-ext-command",
   "bugs": "https://github.com/green1052/discord.js-ext-command/issues",
   "dependencies": {
-    "discord-api-types": "^0.37.37",
-    "discord.js": "^14.9.0"
+    "discord-api-types": "^0.37.42",
+    "discord.js": "^14.11.0"
   },
-  "packageManager": "yarn@3.5.0",
+  "packageManager": "yarn@3.5.1",
   "devDependencies": {
-    "typescript": "^5.0.3"
+    "typescript": "^5.0.4"
   }
 }
